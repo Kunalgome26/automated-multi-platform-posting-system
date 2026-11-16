@@ -1,20 +1,19 @@
 
-import os
 import httpx
 
 from datetime import datetime, timezone
-from dotenv import load_dotenv
-
 from app.platforms.base import BasePlatform
-
-load_dotenv()
+from app.config import (
+    TELEGRAM_BOT_TOKEN,
+    TELEGRAM_CHAT_ID
+)
 
 
 class TelegramPlatform(BasePlatform):
 
     def __init__(self):
-        self.token = os.getenv("TELEGRAM_BOT_TOKEN")
-        self.chat_id = os.getenv("TELEGRAM_CHAT_ID")
+        self.token = TELEGRAM_BOT_TOKEN
+        self.chat_id = TELEGRAM_CHAT_ID
 
         if not self.token or not self.chat_id:
             raise ValueError("Telegram credentials are missing")

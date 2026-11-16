@@ -1,27 +1,29 @@
 
-import os
 import httpx
-from datetime import datetime
-from dotenv import load_dotenv
-from app.platforms.base import BasePlatform
 
-load_dotenv()
+from datetime import datetime
+from app.platforms.base import BasePlatform
+from app.config import (
+    MASTODON_ACCESS_TOKEN,
+    MASTODON_API_BASE_URL
+)
 
 
 class MastodonPlatform(BasePlatform):
 
     def __init__(self):
-        self.access_token = os.getenv("MASTODON_ACCESS_TOKEN")
-        self.base_url = os.getenv(
-            "MASTODON_API_BASE_URL",
-            "https://mastodon.social"
+        self.access_token = MASTODON_ACCESS_TOKEN
+        self.base_url = (
+            MASTODON_API_BASE_URL or "https://mastodon.social"
         ).rstrip("/")
 
         if not self.access_token:
             raise ValueError("Mastodon access token is missing")
 
     async def publish(self, message: str) -> dict:
+
         async with httpx.AsyncClient(timeout=30) as client:
+
             response = await client.post(
                 f"{self.base_url}/api/v1/statuses",
                 headers={
@@ -40,6 +42,7 @@ class MastodonPlatform(BasePlatform):
                 )
 
             data = response.json()
+
             created_at = datetime.fromisoformat(
                 data["created_at"].replace("Z", "+00:00")
             )

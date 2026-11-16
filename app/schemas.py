@@ -21,7 +21,7 @@ class PostingRequest(BaseModel):
         if not value:
             raise ValueError("Message cannot be empty")
 
-        urls = re.findall(r"https?://[^\s<>\"']+", value)
+        urls = re.findall(r"""https?://[^\s<>"']+""", value)
 
         if len(urls) != 1:
             raise ValueError("Exactly one URL must be included")
@@ -36,4 +36,3 @@ class PostingRequest(BaseModel):
             raise ValueError("Invalid URL")
 
         return value
-

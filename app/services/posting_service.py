@@ -1,6 +1,4 @@
 
-from datetime import datetime, timezone
-
 from app.platforms.base import BasePlatform
 
 
@@ -24,8 +22,12 @@ async def post_to_platform(
 
     except Exception as error:
 
+        platform_name = platform.__class__.__name__.replace(
+            "Platform", ""
+        )
+
         return {
-            "platform": platform.__class__.__name__,
+            "platform": platform_name,
             "status": "failed",
             "posted_url": None,
             "public_access": False,

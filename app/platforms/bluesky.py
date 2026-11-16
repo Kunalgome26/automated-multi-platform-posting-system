@@ -1,24 +1,27 @@
 
-import os
 import httpx
-from datetime import datetime, timezone
-from dotenv import load_dotenv
-from app.platforms.base import BasePlatform
 
-load_dotenv()
+from datetime import datetime, timezone
+from app.platforms.base import BasePlatform
+from app.config import (
+    BLUESKY_HANDLE,
+    BLUESKY_APP_PASSWORD
+)
 
 
 class BlueskyPlatform(BasePlatform):
+
     BASE_URL = "https://bsky.social/xrpc"
 
     def __init__(self):
-        self.handle = os.getenv("BLUESKY_HANDLE")
-        self.password = os.getenv("BLUESKY_APP_PASSWORD")
+        self.handle = BLUESKY_HANDLE
+        self.password = BLUESKY_APP_PASSWORD
 
         if not self.handle or not self.password:
             raise ValueError("Bluesky credentials are missing")
 
     async def publish(self, message: str) -> dict:
+
         async with httpx.AsyncClient(timeout=30) as client:
 
             # Step 1: Login and create a session
