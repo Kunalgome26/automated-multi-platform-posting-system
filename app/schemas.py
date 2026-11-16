@@ -21,14 +21,19 @@ class PostingRequest(BaseModel):
         if not value:
             raise ValueError("Message cannot be empty")
 
-        urls = re.findall(r"https?://[^\s]+", value)
+        urls = re.findall(r"https?://[^\s<>\"']+", value)
 
         if len(urls) != 1:
             raise ValueError("Exactly one URL must be included")
 
         try:
-            HttpUrl(urls[0])
+            parsed_url = HttpUrl(urls[0])
+
+            if "." not in parsed_url.host:
+                raise ValueError("Invalid URL")
+
         except Exception:
             raise ValueError("Invalid URL")
 
         return value
+
